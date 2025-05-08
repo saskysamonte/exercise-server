@@ -32,6 +32,8 @@ const userRoute = require("./routes/v1/UserRoute.js");
 const app = express();
 const server = http.createServer(app);
 
+app.set('trust proxy', 1); 
+
 // --- Security Middleware ---
 
 // Secure HTTP headers
