@@ -37,7 +37,7 @@ const limiter = rateLimit({
 
 router.get("/profile", authenticate, getProfile);
 
-router.post("/auth/login", limiter, authLogin);
+router.post("/auth/login", authLogin);
 router.post("/auth/register", authRegister);
 router.post("/auth/refresh-token", authRefreshToken);
 router.post("/auth/logout", authenticate, authLogout);

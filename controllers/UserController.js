@@ -236,7 +236,7 @@ const getProfile = async (req, res) => {
     try {
         // Verify the access token
         const decoded = jwt.verify(token, JWT_SECRET);
-        // console.log("Access token decoded:", decoded);
+        console.log("Access token decoded:", decoded);
 
         const user = await UserModel.findOne({ username: decoded.username })
             .select("-_id -__v -password")
@@ -264,11 +264,11 @@ const getProfile = async (req, res) => {
                 gender: user.gender,
                 date_of_birth: user.dateOfBirth,
                 home_address: {
-                    street: user.homeAddress.street,
-                    city: user.homeAddress.city,
-                    state: user.homeAddress.state,
-                    postal_code: user.homeAddress.postalCode,
-                    country: user.homeAddress.country,
+                    street: user.homeAddress?.street,
+                    city: user.homeAddress?.city,
+                    state: user.homeAddress?.state,
+                    postal_code: user.homeAddress?.postalCode,
+                    country: user.homeAddress?.country,
                 },
                 marital_status: user.maritalStatus,
                 created_at: user.createdAt,
