@@ -67,7 +67,8 @@ app.use((req, res, next) => {
 
 // --- CORS Configuration ---
 const allowedOrigins = [
-    "http://localhost:3001", // your frontend or allowed domains
+    "http://localhost:3001", 
+    "https://testapp.saskysamonte.com" 
 ];
 
 app.use(
