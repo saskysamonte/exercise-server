@@ -25,7 +25,7 @@ const authenticate = async (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
-        const user = await UserModel.findOne({ username: decoded.username });
+        const user = await UserModel.findOne({ username: decoded.username   });
 
         if (!user) {
             return res.status(401).json({ message: "Invalid access token. User not found." });

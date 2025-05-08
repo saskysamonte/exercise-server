@@ -19,7 +19,6 @@ const {
     authRegister,
     authRefreshToken,
     authLogout,
-    getCsrfToken,
     getProfile,
     updateProfile,
 } = require("../../controllers/UserController.js");
@@ -37,7 +36,6 @@ const limiter = rateLimit({
 });
 
 router.get("/profile", authenticate, getProfile);
-router.get("/auth/csrf-token", getCsrfToken); 
 
 router.post("/auth/login", limiter, authLogin);
 router.post("/auth/register", authRegister);

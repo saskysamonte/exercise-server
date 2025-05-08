@@ -18,7 +18,6 @@ const cors = require("cors");
 const http = require("http");
 const mongoose = require("mongoose");
 const helmet = require("helmet");
-const csrf = require("csurf");
 const xss = require("xss");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
@@ -26,7 +25,7 @@ const MongoStore = require("connect-mongo");
 
 const environment = process.env.ENVIRONMENT || "localhost";
 
-//V1 Routes
+// V1 Routes
 const userRoute = require("./routes/v1/UserRoute.js");
 
 // Initialize Express app and server
@@ -66,33 +65,9 @@ app.use((req, res, next) => {
     next();
 });
 
-// CSRF Protection
-const csrfProtection = csrf({
-    cookie: {
-        httpOnly: true,
-        secure: environment === "production", 
-        sameSite: "Strict", 
-    }
-});
-
-if (environment === "production") {
-    // app.use(csrfProtection);
-} else {
-    console.log("CSRF protection is not applied in development environment");
-}
-
-// Global CSRF error handler
-app.use((err, req, res, next) => {
-    if (err.code === 'EBADCSRFTOKEN') {
-        return res.status(403).json({ error: 'Invalid CSRF token' });
-    }
-    next(err);
-});
-
 // --- CORS Configuration ---
-
 const allowedOrigins = [
-    "http://localhost:3001",
+    "http://localhost:3001", // your frontend or allowed domains
 ];
 
 app.use(
@@ -105,7 +80,7 @@ app.use(
             }
         },
         methods: ["GET", "POST", "PUT", "DELETE"],
-        credentials: true,
+        credentials: true, // Allow credentials like cookies or headers
     })
 );
 
@@ -120,12 +95,11 @@ app.use(
                 environment === "production"
                     ? process.env.MONGO_DB_URI_PROD
                     : process.env.MONGO_DB_URI_DEV,
-            ttl: 14 * 24 * 60 * 60,
+            ttl: 14 * 24 * 60 * 60, // 14 days session timeout
         }),
-        cookie: { secure: environment === "production" },
+        cookie: { secure: environment === "production" }, // Ensure secure cookie in production
     })
 );
-
 
 // --- API Version Validation Middleware ---
 const versionValidator = (req, res, next) => {
@@ -139,23 +113,22 @@ const versionValidator = (req, res, next) => {
 // --- Define Routes ---
 app.use("/api/:version/users", versionValidator, userRoute);
 
-
 // --- MongoDB Connection ---
-let mongoUri =
-    environment === "production"
-        ? process.env.MONGO_DB_URI_PROD
-        : process.env.MONGO_DB_URI_DEV;
+let mongoURI =
+  environment === "production"
+    ? process.env.MONGO_DB_URI_PROD
+    : process.env.MONGO_DB_URI_DEV;
 
 mongoose
-    .connect(mongoUri)
-    .then(() => {
-        console.log("Connected to database!");
-        const port = process.env.PORT || 3002;
-        server.listen(port, () => {
-            console.log(`Server is running on port ${port}`);
-        });
-    })
-    .catch((error) => {
-        console.error("Database connection failed:", error);
-        process.exit(1);
+  .connect(mongoURI)
+  .then(() => {
+    console.log("Connected to database!");
+    const port = process.env.PORT || 3002;
+    server.listen(port, () => {
+      console.log(`Server is running on port ${port}`);
     });
+  })
+  .catch((error) => {
+    console.error("Database connection failed:", error);
+    process.exit(1);
+  });

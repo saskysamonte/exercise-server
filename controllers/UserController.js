@@ -21,10 +21,6 @@ const UserModel = require("../models/user/UserModel");
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_SECRET_REFRESH = process.env.JWT_SECRET_REFRESH;
 
-const getCsrfToken = (req, res) => {
-    return res.status(200).json({ csrfToken: req.csrfToken() });
-};
-
 const generateAccessToken = (payload) => {
     return jwt.sign(payload, JWT_SECRET, { expiresIn: "1d" });
 };
@@ -102,11 +98,11 @@ const authRegister = async (req, res) => {
         });
     }
 
-    const { username, password, confirm_password } = req.body;
+    const { login, password, confirm_password } = req.body;
 
     const missing_fields = [];
 
-    if (!username) missing_fields.push("username");
+    if (!login) missing_fields.push("login");
     if (!password) missing_fields.push("password");
     if (!confirm_password) missing_fields.push("confirm_password");
 
@@ -127,7 +123,7 @@ const authRegister = async (req, res) => {
 
     try {
         // Check if username already exists
-        const existingUser = await UserModel.findOne({ username });
+        const existingUser = await UserModel.findOne({ username: login });
 
         if (existingUser) {
             return res.status(400).json({
@@ -141,7 +137,7 @@ const authRegister = async (req, res) => {
 
         // Create a new user instance
         const newUser = new UserModel({
-            username,
+            username: login,
             password: hashedPassword,
             userId: uuidv4(),
         });
@@ -363,7 +359,6 @@ module.exports = {
     authRegister,
     authRefreshToken,
     authLogout,
-    getCsrfToken,
     getProfile,
     updateProfile
 };
