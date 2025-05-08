@@ -23,10 +23,10 @@ const userSchema = new Schema({
     firstName: { type: String },
     lastName: { type: String },
     displayName: { type: String },
-    avatar: { type: String, default: 'default-avatar.png' },
+    avatar: { type: String, default: 'https://avatar.iran.liara.run/public/37' },
     salutation: {
         type: String,
-        enum: ['mr', 'ms', 'mrs', 'dr', 'prof', 'eng'],
+        enum: ['mr', 'ms', 'mrs'],
     },
     emailAddress: {
         type: String,
@@ -53,6 +53,21 @@ const userSchema = new Schema({
     maritalStatus: {
         type: String,
         enum: ['single', 'married', 'divorced', 'widowed'],
+    },
+    spouse: {
+        salutation: {
+            type: String,
+            enum: ['mr', 'ms', 'mrs'],
+        },
+        firstName: { type: String },
+        lastName: { type: String },
+    },
+    personalPreferences: {
+        hobbies: [{ type: String }],
+        interests: [{ type: String }],
+        sports: [{ type: String }],
+        musics: [{ type: String }],
+        movies: [{ type: String }],
     },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     createdAt: { type: Date, default: Date.now },

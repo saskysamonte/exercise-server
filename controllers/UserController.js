@@ -271,6 +271,18 @@ const getProfile = async (req, res) => {
                     country: user.homeAddress?.country,
                 },
                 marital_status: user.maritalStatus,
+                spouse: {
+                    salutation: user.spouse?.salutation,
+                    first_name: user.spouse?.firstName,
+                    last_name: user.spouse?.lastName,
+                },
+                personal_preferences: {
+                    hobbies: user.personalPreferences?.hobbies,
+                    interests: user.personalPreferences?.interests,
+                    sports: user.personalPreferences?.sports,
+                    musics: user.personalPreferences?.musics,
+                    movies: user.personalPreferences?.movies,
+                },
                 created_at: user.createdAt,
                 updated_at: user.updatedAt,
             },
@@ -285,11 +297,11 @@ const getProfile = async (req, res) => {
 };
 
 const updateProfile = async (req, res) => {
-    const { first_name, last_name, email_address, gender, date_of_birth, salutation, home_address, marital_status, avatar } = req.body;
-    
+    const { first_name, last_name, email_address, gender, date_of_birth, salutation, home_address, marital_status, avatar, spouse, personal_preferences } = req.body;
+
     const updatedFields = {};
 
-    if (!first_name && !last_name && !email_address && !gender && !date_of_birth && !salutation && !home_address && !marital_status && !avatar) {
+    if (!first_name && !last_name && !email_address && !gender && !date_of_birth && !salutation && !home_address && !marital_status && !avatar && !spouse && !personal_preferences) {
         return res.status(400).json({
             message: "No fields to update provided.",
             status: 400,
@@ -302,8 +314,34 @@ const updateProfile = async (req, res) => {
     if (gender) updatedFields.gender = gender;
     if (date_of_birth) updatedFields.dateOfBirth = new Date(date_of_birth);
     if (salutation) updatedFields.salutation = salutation;
-    if (home_address) updatedFields.homeAddress = home_address;
+    if (home_address) {
+        updatedFields.homeAddress = {};
+        if (home_address.street) updatedFields.homeAddress.street = home_address.street;
+        if (home_address.city) updatedFields.homeAddress.city = home_address.city;
+        if (home_address.state) updatedFields.homeAddress.state = home_address.state;
+        if (home_address.postal_code) updatedFields.homeAddress.postalCode = home_address.postal_code;
+        if (home_address.country) updatedFields.homeAddress.country = home_address.country;
+    }
+
     if (marital_status) updatedFields.maritalStatus = marital_status;
+    if (spouse) {
+        updatedFields.spouse = {};
+        if (spouse.salutation) updatedFields.spouse.salutation = spouse.salutation;
+        if (spouse.first_name) updatedFields.spouse.firstName = spouse.first_name;
+        if (spouse.last_name) updatedFields.spouse.lastName = spouse.last_name;
+    }
+
+    if (personal_preferences) {
+        updatedFields.personalPreferences = {
+            hobbies: personal_preferences.hobbies,
+            interests: personal_preferences.interests,
+            sports: personal_preferences.sports,
+            musics: personal_preferences.musics,
+            movies: personal_preferences.movies,
+        };
+    }
+
+
     if (avatar) updatedFields.avatar = avatar;
 
     try {
@@ -320,7 +358,7 @@ const updateProfile = async (req, res) => {
         }
 
         Object.assign(user, updatedFields);
-        user.updatedAt = Date.now(); 
+        user.updatedAt = Date.now();
         await user.save();
 
         return res.status(200).json({
@@ -341,6 +379,18 @@ const updateProfile = async (req, res) => {
                     state: user.homeAddress.state,
                     postal_code: user.homeAddress.postalCode,
                     country: user.homeAddress.country,
+                },
+                spouse: {
+                    salutation: user.spouse?.salutation,
+                    first_name: user.spouse?.firstName,
+                    last_name: user.spouse?.lastName,
+                },
+                personal_preferences: {
+                    hobbies: user.personalPreferences?.hobbies,
+                    interests: user.personalPreferences?.interests,
+                    sports: user.personalPreferences?.sports,
+                    musics: user.personalPreferences?.musics,
+                    movies: user.personalPreferences?.movies,
                 },
                 marital_status: user.maritalStatus,
                 avatar: user.avatar,
