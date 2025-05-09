@@ -59,17 +59,33 @@ const userSchema = new Schema({
         salutation: {
             type: String,
             enum: ['mr', 'ms', 'mrs'],
+            default: 'mr'
         },
-        firstName: { type: String },
-        lastName: { type: String },
+        firstName: { type: String, default: '-'  },
+        lastName: { type: String, default: '-' },
     },
     personalPreferences: {
-        hobbies: [{ type: String }],
-        interests: [{ type: String }],
-        sports: [{ type: String }],
-        musics: [{ type: String }],
-        movies: [{ type: String }],
-    },
+  hobbies: {
+    type: [String],
+    default: ['-']
+  },
+  interests: {
+    type: [String],
+    default: ['-']
+  },
+  sports: {
+    type: [String],
+    default: ['-']
+  },
+  musics: {
+    type: [String],
+    default: ['-']
+  },
+  movies: {
+    type: [String],
+    default: ['']
+  }
+},
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
