@@ -21,6 +21,8 @@ const JWT_SECRET_REFRESH = process.env.JWT_SECRET_REFRESH;
 const authenticate = async (req, res, next) => {
     // Extract access token from the Authorization header
     const token = req.headers.authorization?.split(' ')[1]?.trim();
+    // console.log('Access token:', token);
+    // console.log('Refresh token:', req.headers['app-refresh-token']);
 
     // If no token is provided
     if (!token) {
@@ -50,7 +52,7 @@ const authenticate = async (req, res, next) => {
             console.log('Access token expired, attempting refresh token process.');
 
             // Extract refresh token from headers
-            const refreshToken = req.headers['APP-REFRESH-TOKEN']; 
+            const refreshToken = req.headers['app-refresh-token']; 
 
             // If no refresh token is provided
             if (!refreshToken) {
@@ -78,8 +80,8 @@ const authenticate = async (req, res, next) => {
                 );
 
                 // Send new tokens in the response headers
-                res.setHeader('APP-NEW-ACCESS-TOKEN', newAccessToken);
-                res.setHeader('APP-REFRESH-TOKEN', refreshToken);
+                res.setHeader('app-new-access-token', newAccessToken);
+                res.setHeader('app-refresh-token', refreshToken);
                 console.log('New access token generated and sent.');
 
                 // Attach the user object to the request and proceed
